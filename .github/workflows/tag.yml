@@ -5,8 +5,6 @@ on:
       - main
 jobs:
   build:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,9 +15,17 @@ jobs:
           tag_exists_error: false
           message: "Latest release"
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get Token
+        id: get_workflow_token
+        uses: ramesh2051/workflow-application-token-action@v1
+        with:
+          application_id: ${{ secrets.APPLICATION_ID }}
+          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+          permissions: "actions:write, contents:write"
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
+          token: ${{ steps.get_workflow_token.outputs.token }}
