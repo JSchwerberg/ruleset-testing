@@ -14,10 +14,8 @@ jobs:
         with:
           app_id: ${{ secrets.APPLICATION_ID }}
           private_key: ${{ secrets.APPLICATION_SECRET }}
-      - uses: rickstaa/action-create-tag@v1
-        id: "tag_create"
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
         with:
-          tag: "v1.0.0"
-          tag_exists_error: false
-          message: "Latest release"
           github_token: ${{ steps.get_workflow_token.outputs.token }}
